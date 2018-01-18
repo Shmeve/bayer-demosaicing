@@ -1,38 +1,23 @@
 #include <opencv2/opencv.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgproc.hpp>
 #include <iostream>
+#include "Demosaic.h"
 
 using namespace cv;
 using namespace std;
 
 int main()
 {
-    Mat sourceImage = imread("/home/steve/Development/comp498/comp498-a1-demosaicing/opencv-logo-small.png");
+    Demosaic crayons = Demosaic("images/mosaic/crayons_mosaic.bmp");
+    Demosaic oldwell = Demosaic("images/mosaic/oldwell_mosaic.png");
+    Demosaic pencils = Demosaic("images/mosaic/pencils_mosaic.bmp");
 
-    // Check if image was successfully read
-    if(sourceImage.empty())
-    {
-        cerr << "Could not read image" << endl;
-        return 1;
-    }
+    crayons.generateRGBComponents();
+    oldwell.generateRGBComponents();
+    pencils.generateRGBComponents();
 
-    // Display source image
-    namedWindow("Source", WINDOW_AUTOSIZE);
-    imshow("Source", sourceImage);
-
-    // Convert to grayscale
-    Mat grayImage;
-    cvtColor(sourceImage, grayImage, COLOR_BGR2GRAY);
-
-    // Display gray image
-    namedWindow("Grayscale", WINDOW_AUTOSIZE);
-    imshow("Grayscale", grayImage);
-
-    //Wait until any key is pressed
-    waitKey(0);
-
-    cout << "Closing ..." << endl;
+    crayons.display();
+    oldwell.display();
+    pencils.display();
 
     return 0;
 }
