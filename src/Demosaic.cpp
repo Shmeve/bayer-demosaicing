@@ -3,8 +3,9 @@
 using namespace std;
 using namespace cv;
 
-Demosaic::Demosaic(string filePath) {
+Demosaic::Demosaic(string filePath, string color) {
     image = imread(filePath, 0);
+    colorImage = imread(color, 1);
     rows = image.rows;
     cols = image.cols;
 
@@ -13,6 +14,7 @@ Demosaic::Demosaic(string filePath) {
     b = Mat(rows, cols, CV_8U);
 
     demosaicImage = Mat::zeros(rows, cols, CV_8UC3);
+    result = Mat::zeros(rows, cols, CV_8UC3);
 }
 
 void Demosaic::generateRGBComponents() {
@@ -47,6 +49,8 @@ void Demosaic::display() {
     imshow("G Components", g);
     imshow("B Components", b);
     imshow("Color?", demosaicImage);
+    imshow("square diff", result);
+    imshow("original", colorImage);
 
     waitKey(0);
 }
@@ -116,6 +120,10 @@ void Demosaic::colorize() {
             );
         }
     }
+}
+
+void Demosaic::squaredDifference() {
+    result = colorImage - demosaicImage;
 }
 
 const Mat &Demosaic::getR() const {

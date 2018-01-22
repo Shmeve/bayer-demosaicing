@@ -7,9 +7,9 @@ using namespace std;
 
 int main()
 {
-    Demosaic crayons = Demosaic("images/mosaic/crayons_mosaic.bmp");
-    Demosaic oldwell = Demosaic("images/mosaic/oldwell_mosaic.png");
-    Demosaic pencils = Demosaic("images/mosaic/pencils_mosaic.bmp");
+    Demosaic crayons = Demosaic("images/mosaic/crayons_mosaic.bmp", "images/color/crayons.jpg");
+    Demosaic oldwell = Demosaic("images/mosaic/oldwell_mosaic.png", "images/color/oldwell.jpg");
+    Demosaic pencils = Demosaic("images/mosaic/pencils_mosaic.bmp", "images/color/pencils.jpg");
 
     crayons.generateRGBComponents();
     oldwell.generateRGBComponents();
@@ -22,6 +22,10 @@ int main()
     crayons.colorize();
     oldwell.colorize();
     pencils.colorize();
+
+    crayons.squaredDifference();
+    oldwell.squaredDifference();
+    pencils.squaredDifference();
 
     crayons.display();
     oldwell.display();
