@@ -13,10 +13,13 @@ private:
     cv::Mat b;
     int rows;
     int cols;
+    cv::Mat demosaicImage;
 
 public:
     explicit Demosaic(std::string filePath);
     void generateRGBComponents();
+    void interpolate();
+    void colorize();
     void display();
     const cv::Mat &getR() const;
     void setR(const cv::Mat &r);

@@ -15,6 +15,14 @@ int main()
     oldwell.generateRGBComponents();
     pencils.generateRGBComponents();
 
+    crayons.interpolate();
+    oldwell.interpolate();
+    pencils.interpolate();
+
+    crayons.colorize();
+    oldwell.colorize();
+    pencils.colorize();
+
     crayons.display();
     oldwell.display();
     pencils.display();
