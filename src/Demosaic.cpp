@@ -57,13 +57,9 @@ void Demosaic::generateRGBComponents() {
  * Display results of the demosaicing process
  */
 void Demosaic::display() {
-    imshow("Original", image);
-    imshow("R Components", r);
-    imshow("G Components", g);
-    imshow("B Components", b);
-    imshow("Color?", demosaicImage);
-    imshow("square diff", result);
-    imshow("original", colorImage);
+    imshow("Demosaic", demosaicImage);
+    imshow("Squared Difference", result);
+    imshow("Original", colorImage);
 
     waitKey(0);
 }
