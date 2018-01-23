@@ -23,6 +23,7 @@ public:
     void interpolate();
     void colorize();
     void squaredDifference();
+    void modifiedInterpolation();
     void display();
     const cv::Mat &getR() const;
     void setR(const cv::Mat &r);

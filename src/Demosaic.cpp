@@ -156,6 +156,23 @@ void Demosaic::squaredDifference() {
     }
 }
 
+/**
+ * Implement proposed bilinear interpolation improvement
+ */
+void Demosaic::modifiedInterpolation() {
+    Mat r_g = Mat(rows, cols, CV_8U);
+    Mat b_g = Mat(rows, cols, CV_8U);
+
+    r_g = r - g;
+    b_g = b - g;
+
+    medianBlur(r_g, r_g, 3);
+    medianBlur(b_g, b_g, 3);
+
+    r = r_g + g;
+    b = b_g + g;
+}
+
 /* Auto generated getters and setters */
 const Mat &Demosaic::getR() const {
     return r;
