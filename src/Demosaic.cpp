@@ -11,18 +11,18 @@ using namespace cv;
  * @param color file path to the original color image
  */
 Demosaic::Demosaic(string filePath, string color) {
-    Mat raw = imread(filePath, 0);
+    Mat raw = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
     raw.convertTo(image, CV_32F);
 
-    colorImage = imread(color, 1);
+    colorImage = imread(color, CV_LOAD_IMAGE_COLOR);
     colorImage.convertTo(colorImage, CV_32F);
 
     rows = image.rows;
     cols = image.cols;
 
-    r = Mat(rows, cols, CV_32F);
-    g = Mat(rows, cols, CV_32F);
-    b = Mat(rows, cols, CV_32F);
+    r = Mat::zeros(rows, cols, CV_32F);
+    g = Mat::zeros(rows, cols, CV_32F);
+    b = Mat::zeros(rows, cols, CV_32F);
 
     demosaicImage = Mat::zeros(rows, cols, CV_32FC3);
     result = Mat::zeros(rows, cols, CV_32FC3);
