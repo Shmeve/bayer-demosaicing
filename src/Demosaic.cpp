@@ -58,22 +58,6 @@ void Demosaic::generateRGBComponents() {
 }
 
 /**
- * Display results of the demosaicing process
- */
-void Demosaic::display() {
-    Mat d8u, r8u, c8u;
-    demosaicImage.convertTo(d8u, CV_8UC3);
-    result.convertTo(r8u, CV_8UC3);
-    colorImage.convertTo(c8u, CV_8UC3);
-
-    imshow("Demosaic", d8u);
-    imshow("Squared Difference", r8u);
-    imshow("Original", c8u);
-
-    waitKey(0);
-}
-
-/**
  * Interpolate the missing information for each of the R, G, and B component matrices
  */
 void Demosaic::interpolate() {
@@ -176,4 +160,20 @@ void Demosaic::modifiedInterpolation() {
 
     r = r_g + g;
     b = b_g + g;
+}
+
+/**
+ * Display results of the demosaicing process
+ */
+void Demosaic::display() {
+    Mat d8u, r8u, c8u;
+    demosaicImage.convertTo(d8u, CV_8UC3);
+    result.convertTo(r8u, CV_8UC3);
+    colorImage.convertTo(c8u, CV_8UC3);
+
+    imshow("Original", c8u);
+    imshow("Demosaic", d8u);
+    imshow("Squared Difference", r8u);
+
+    waitKey(0);
 }
