@@ -8,10 +8,10 @@ using namespace std;
 int main()
 {
     vector<Demosaic> demosaics = vector<Demosaic>();
+    demosaics.emplace_back(Demosaic("images/mosaic/pencils_mosaic.bmp", "images/color/pencils.jpg"));
     demosaics.emplace_back(Demosaic("images/mosaic/crayons_mosaic.bmp", "images/color/crayons.jpg"));
     demosaics.emplace_back(Demosaic("images/mosaic/oldwell_mosaic.png", "images/color/oldwell.jpg"));
-    demosaics.emplace_back(Demosaic("images/mosaic/pencils_mosaic.bmp", "images/color/pencils.jpg"));
-    
+
     for (auto demosaic : demosaics) {
         // Part 1
         demosaic.generateRGBComponents();

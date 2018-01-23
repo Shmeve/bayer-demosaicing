@@ -11,17 +11,21 @@ using namespace cv;
  * @param color file path to the original color image
  */
 Demosaic::Demosaic(string filePath, string color) {
-    image = imread(filePath, 0);
+    Mat raw = imread(filePath, 0);
+    raw.convertTo(image, CV_32F);
+
     colorImage = imread(color, 1);
+    colorImage.convertTo(colorImage, CV_32F);
+
     rows = image.rows;
     cols = image.cols;
 
-    r = Mat(rows, cols, CV_8U);
-    g = Mat(rows, cols, CV_8U);
-    b = Mat(rows, cols, CV_8U);
+    r = Mat(rows, cols, CV_32F);
+    g = Mat(rows, cols, CV_32F);
+    b = Mat(rows, cols, CV_32F);
 
-    demosaicImage = Mat::zeros(rows, cols, CV_8UC3);
-    result = Mat::zeros(rows, cols, CV_8UC3);
+    demosaicImage = Mat::zeros(rows, cols, CV_32FC3);
+    result = Mat::zeros(rows, cols, CV_32FC3);
 }
 
 /**
@@ -33,20 +37,20 @@ void Demosaic::generateRGBComponents() {
             if (i % 2 == 0) {
                 if (j % 2 == 0) {
                     // R Component
-                    r.at<uchar>(i,j) = image.at<uchar>(i,j);
+                    r.at<float>(i,j) = image.at<float>(i,j);
                 }
                 else {
                     // G Component
-                    g.at<uchar>(i,j) = image.at<uchar>(i,j);
+                    g.at<float>(i,j) = image.at<float>(i,j);
                 }
             }
             else {
                 if (j % 2 == 0) {
                     // G Component
-                    g.at<uchar>(i,j) = image.at<uchar>(i,j);
+                    g.at<float>(i,j) = image.at<float>(i,j);
                 } else {
                     // B Component
-                    b.at<uchar>(i,j) = image.at<uchar>(i,j);
+                    b.at<float>(i,j) = image.at<float>(i,j);
                 }
             }
         }
@@ -57,9 +61,14 @@ void Demosaic::generateRGBComponents() {
  * Display results of the demosaicing process
  */
 void Demosaic::display() {
-    imshow("Demosaic", demosaicImage);
-    imshow("Squared Difference", result);
-    imshow("Original", colorImage);
+    Mat d8u, r8u, c8u;
+    demosaicImage.convertTo(d8u, CV_8UC3);
+    result.convertTo(r8u, CV_8UC3);
+    colorImage.convertTo(c8u, CV_8UC3);
+
+    imshow("Demosaic", d8u);
+    imshow("Squared Difference", r8u);
+    imshow("Original", c8u);
 
     waitKey(0);
 }
@@ -99,15 +108,15 @@ void Demosaic::interpolate() {
     Mat k3 = Mat(3, 3, CV_32F, kdata3);
     Mat k4 = Mat(3, 3, CV_32F, kdata4);
 
-    Mat r2 = Mat(rows, cols, CV_8U);
-    Mat r3 = Mat(rows, cols, CV_8U);
-    Mat r4 = Mat(rows, cols, CV_8U);
+    Mat r2 = Mat(rows, cols, CV_32F);
+    Mat r3 = Mat(rows, cols, CV_32F);
+    Mat r4 = Mat(rows, cols, CV_32F);
 
-    Mat b2 = Mat(rows, cols, CV_8U);
-    Mat b3 = Mat(rows, cols, CV_8U);
-    Mat b4 = Mat(rows, cols, CV_8U);
+    Mat b2 = Mat(rows, cols, CV_32F);
+    Mat b3 = Mat(rows, cols, CV_32F);
+    Mat b4 = Mat(rows, cols, CV_32F);
 
-    Mat g2 = Mat(rows, cols, CV_8U);
+    Mat g2 = Mat(rows, cols, CV_32F);
 
     filter2D(r, r2, -1, k1);
     filter2D(r, r3, -1, k2);
@@ -129,10 +138,10 @@ void Demosaic::interpolate() {
 void Demosaic::colorize() {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            demosaicImage.at<Vec3b>(i, j) = Vec3b(
-                    b.at<uchar>(i,j),
-                    g.at<uchar>(i,j),
-                    r.at<uchar>(i,j)
+            demosaicImage.at<Vec3f>(i, j) = Vec3f(
+                    b.at<float>(i,j),
+                    g.at<float>(i,j),
+                    r.at<float>(i,j)
             );
         }
     }
@@ -145,8 +154,8 @@ void Demosaic::squaredDifference() {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             for (int k = 0; k < 3; k++) {
-                result.at<Vec3b>(i, j)[k] =
-                        sqrt(pow((colorImage.at<Vec3b>(i, j)[k] - demosaicImage.at<Vec3b>(i, j)[k]), 2));
+                result.at<Vec3f>(i, j)[k] =
+                        sqrt(pow((colorImage.at<Vec3f>(i, j)[k] - demosaicImage.at<Vec3f>(i, j)[k]), 2));
             }
         }
     }
@@ -156,8 +165,8 @@ void Demosaic::squaredDifference() {
  * Implement proposed bilinear interpolation improvement
  */
 void Demosaic::modifiedInterpolation() {
-    Mat r_g = Mat(rows, cols, CV_8U);
-    Mat b_g = Mat(rows, cols, CV_8U);
+    Mat r_g = Mat(rows, cols, CV_32F);
+    Mat b_g = Mat(rows, cols, CV_32F);
 
     r_g = r - g;
     b_g = b - g;
