@@ -1,8 +1,15 @@
 #include "Demosaic.h"
+#include <cmath>
 
 using namespace std;
 using namespace cv;
 
+/**
+ * Initialize parameters needed to colorize a bayer mosaic image
+ *
+ * @param filePath file path to bayer mosaic image
+ * @param color file path to the original color image
+ */
 Demosaic::Demosaic(string filePath, string color) {
     image = imread(filePath, 0);
     colorImage = imread(color, 1);
@@ -17,6 +24,9 @@ Demosaic::Demosaic(string filePath, string color) {
     result = Mat::zeros(rows, cols, CV_8UC3);
 }
 
+/**
+ * Split bayer (RGGB) mosaic image into separate R, G, and B matrices
+ */
 void Demosaic::generateRGBComponents() {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
@@ -43,6 +53,9 @@ void Demosaic::generateRGBComponents() {
     }
 }
 
+/**
+ * Display results of the demosaicing process
+ */
 void Demosaic::display() {
     imshow("Original", image);
     imshow("R Components", r);
@@ -55,8 +68,11 @@ void Demosaic::display() {
     waitKey(0);
 }
 
+/**
+ * Interpolate the missing information for each of the R, G, and B component matrices
+ */
 void Demosaic::interpolate() {
-    //filter2D(ex1, ex1, -1, k1);
+    // Kernals for R and B components
     float kdata1[] = {
             0., 0., 0.,
             1./2., 0., 1./2.,
@@ -75,6 +91,7 @@ void Demosaic::interpolate() {
             1./4., 0., 1./4.
     };
 
+    // Kernal for G component
     float kdata4[] {
             0., 1./4., 0.,
             1./4., 0., 1./4.,
@@ -110,6 +127,9 @@ void Demosaic::interpolate() {
     g = g + g2;
 }
 
+/**
+ * Combine R, G, and B component matrices into a single three channel color image
+ */
 void Demosaic::colorize() {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
@@ -122,10 +142,21 @@ void Demosaic::colorize() {
     }
 }
 
+/**
+ * Highlight the artifacts produced by the demosaicing process
+ */
 void Demosaic::squaredDifference() {
-    result = colorImage - demosaicImage;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            for (int k = 0; k < 3; k++) {
+                result.at<Vec3b>(i, j)[k] =
+                        sqrt(pow((colorImage.at<Vec3b>(i, j)[k] - demosaicImage.at<Vec3b>(i, j)[k]), 2));
+            }
+        }
+    }
 }
 
+/* Auto generated getters and setters */
 const Mat &Demosaic::getR() const {
     return r;
 }
