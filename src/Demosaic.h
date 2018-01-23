@@ -25,16 +25,6 @@ public:
     void squaredDifference();
     void modifiedInterpolation();
     void display();
-    const cv::Mat &getR() const;
-    void setR(const cv::Mat &r);
-    const cv::Mat &getG() const;
-    void setG(const cv::Mat &g);
-    const cv::Mat &getB() const;
-    void setB(const cv::Mat &b);
-    int getRows() const;
-    void setRows(int rows);
-    int getCols() const;
-    void setCols(int cols);
 };
 
 
